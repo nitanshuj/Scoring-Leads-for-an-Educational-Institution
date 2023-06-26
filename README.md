@@ -3,10 +3,6 @@
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 
-This was an assignment I completed as a part of my Post Graduate Diploma in Data Science from Upgrad & IIIT-Bangalore. The dataset and the Problem Statement was provided to me by Upgrad.
-
-Group Size - 2
-
 For documentation of this case study there were two things that I worked on - 
 1) Summary
 2) Report
