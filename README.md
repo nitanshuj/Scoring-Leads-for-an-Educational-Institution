@@ -1,58 +1,18 @@
-# Case Study 2: Scoring Leads for an Educational Institution
+# Lead Scoring - Using ML Modelling
 
-----------------------------------------------------------------
-----------------------------------------------------------------
-
-For documentation of this case study there were two things that I worked on - 
-1) Summary
-2) Report
-
-------------------------------------------------------------------
-
-### Summary of the Case Study:
-
-The objective of the Case Study was to predict the number of converted leads for X Education a company that sells online courses. We wanted the lead conversion rate of our model to be around 80%.
-
-We were given a dataset with 9240 rows and 37 columns. Upon performing Data Cleaning, we had to remove some unrequired columns, and some columns with null values. For some columns, we even had to remove some rows due to null values in them, after which we were left with 9074 rows and 31 columns. By further visualizing the data, we found out that most of the leads are Sourced from google and most customers contacted are have either opened their email recently or they have received/sent a message. Also, most of the leads originate from Landing Page Submission. Apart from this, customers have visited very few web pages of the website, spending very less time on it and frequency of these visits is also very low. Next, when outlier analysis was performed, many outliers were found, thus we decided to created bins for such columns.
-
-While data-preparation, we had to reduce the number of levels for categorical variables. Also, there were some repeated levels in some columns, which we fixed by merging them. Our next step was to convert Binary-Categorical-Columns from Yes/No type to integer 1/0 type. Following which we created dummy variables for Non-Binary-Categorical-variables. This step was followed by 70-30 Train-Test split which was again followed by Standard-Scaling the continuous variables. We then checked for leadconversion rate which came out to be 38% which is good. 
-
-Since we had a lot of variables present in the data, we minimized their count using RFE and selected 15 best columns with it. 
-
-We then made use of the Logistic regression Algorithm to build the model. We ran multiple models until we got a VIF-score of less than 5 and a P-value of 0.05. After running each model, we dropped a feature based on VIF-score and P-value. On our sixth try we got a suitable model. When we ran the model on the training set with a conversion_probability cut-off of 0.5, we got accuracy of 80%, sensitivity/recall of 67%, Specificity of 88% and Precision of 77%. We then proceeded with plotting the ROC curve which gave us an AUC as 86% which is considered very good. Even though we achieved our business objective of around 80% lead conversion rate, still we calculated the optimized cut-offs using Accuracy-Sensitivity-Specificity trade-off which came out to be 0.35. With this new cut-off, the Accuracy became 78%, sensitivity/recall 80%, specificity 77% and Precision 68% which is still good.
-
-On making predictions on the test set with cut-off of 0.35, we got an accuracy of 78%, Sensitivity/Recall 77%, Specificity 78% and Precision 67%. Also, we plotted the ROC curve for the same and AUC came out to be 0.85, which is good. Following this we calculated the Lead Score by multiplying Conversion_probability*100. 
-
-Thus, we successful implemented the Logistic Regression model with a lead conversion rate of around 80%.
-
-
------------------------------------------------------------
-`The report that follows is my explanation of what was performed in the Case Study.`
------------------------------------------------------------
-
-
-## Business Understanding:
-------------------------
-An education company named X Education sells online courses to industry professionals. On any given day, many professionals who are interested in the courses land on their website and browse for courses.
-
-The company markets its courses on several websites and search engines like Google. Once these people land on the website, they might browse the courses or fill up a form for the course or watch some videos. When these people fill up a form providing their email address or phone number, they are classified to be a lead. Moreover, the company also gets leads through past referrals. Once these leads are acquired, employees from the sales team start making calls, writing emails, etc. Through this process, some of the leads get converted while most do not. The typical lead conversion rate at X education is around 30%.
-
-Now, although X Education gets a lot of leads, its lead conversion rate is very poor. For example, if, say, they acquire 100 leads in a day, only about 30 of them are converted. To make this process more efficient, the company wishes to identify the most potential leads, also known as ‘Hot Leads’. If they successfully identify this set of leads, the lead conversion rate should go up as the sales team will now be focusing more on communicating with the potential leads rather than making calls to everyone. A typical lead conversion process can be represented using the following funnel:
+## Business Understanding
+An education company - online course provider for industry professionals, faces a challenge with its low lead conversion rate. Despite generating numerous leads through marketing efforts on platforms like Google and referrals, only about 30% of leads convert into paying customers. The company wants to identify "Hot Leads"—those most likely to convert—to improve efficiency and increase the conversion rate by allowing the sales team to focus on the most promising leads.
 
 ![download](https://user-images.githubusercontent.com/30548563/147401086-8d00570f-4788-4167-8af5-a01e15eaba51.png)
 
-As you can see, there are a lot of leads generated in the initial stage (top) but only a few of them come out as paying customers from the bottom. In the middle stage, you need to nurture the potential leads well (i.e. educating the leads about the product, constantly communicating etc.) in order to get a higher lead conversion.
+## Business Problem to Be Solved
+The company needs a predictive model that assigns a lead score to each potential customer. This score should help prioritize leads based on their likelihood of conversion, aiming to achieve a target lead conversion rate of around 80%.
 
-X Education has appointed you to help them select the most promising leads, i.e. the leads that are most likely to convert into paying customers. The company requires you to build a model wherein you need to assign a lead score to each of the leads such that the customers with higher lead score have a higher conversion chance and the customers with lower lead score have a lower conversion chance. The CEO, in particular, has given a ballpark of the target lead conversion rate to be around 80%.
+## Objective/Goal
+1. Build a Logistic Regression model to assign a lead score (0-100) to each lead, with higher scores indicating higher conversion probability.
+2. Ensure the model is flexible enough to adapt to future changes in business requirements.
+3. Achieve a lead conversion rate close to 80%, improving from the current rate of 30%.
 
-------------------------------------------------------------------
-
-## Data Understanding:
----------------------
-Leads dataset from the past with around 9000 data points is provided. 
-This dataset consists of various attributes such as Lead Source, Total Time Spent on Website, Total Visits, Last Activity, etc. which may or may not be useful in ultimately deciding whether a lead will be converted or not. The target variable, in this case, is the column ‘Converted’ which tells whether a past lead was converted or not wherein 1 means it was converted and 0 means it wasn’t converted. You can learn more about the dataset from the data dictionary provided in the zip folder at the end of the page. Another thing that you also need to check out for are the levels present in the categorical variables.
-
-------------------------------------------------------------------
 
 ## Data Dictionary:
 ----------------------
@@ -96,122 +56,54 @@ This dataset consists of various attributes such as Lead Source, Total Time Spen
 | a free copy of Mastering The Interview | Indicates whether the customer wants a free copy of 'Mastering the Interview' or not.|
 |Last Notable Activity | The last notable acitivity performed by the student.|
 
-------------------------------------------------------------------
-
-## Objectives of the Case Study:
--------------------------------
-**Task 1** - <br>
-Build a Logistic Regression Model to assign a lead score between 0 and 100 to each of the leads which can be used by the company to target potential leads. A higher score would mean that the lead is hot, i.e. is most likely to convert whereas a lower score would mean that the lead is cold and will mostly not get converted.
-
-**Task 2** - <br>
-There are some more problems presented by the company which your model should be able to adjust to if the company's requirement changes in the future so you will need to handle these as well. Our task will be to use the Logistic regression model to solve the problems provided by the company. This is attached as a separate word document.
-
-------------------------------------------------------------------------------
-
-## Methodology:
-------------------------------------------------------------------------------
-- 1): Reading and Understanding the Data
-- 2): Exploratory Data Analysis
-	- Data Cleaning
-		- Dealing with Null Values
-		- Dropping Unnecessary Columns
-		- 
-	- Visualizing the Data
-	- Outlier Analysis
-- 3): Preparing the Data for Modelling
-	- Decreasing the Number of Labels from Non-Binary Categorical Variables
-	- Converting the column into the required data types
-	- Creating Dummy Variables
-	- Train-Test Split (70% - 30%)
-	- Re-Scaling (Standard Scalar)
-	- Checking for Lead Conversion Rate and Class Imbalance
-	- Looking for Correlations
-- 4): Recursive Feature Elimination & Model Building
-	- Running Recursive Feature Elimination with 15 variables as Output.
-	- Building the Logistic Regression Model
-	- Using the VIF Score to remove the unnecessary variables from the train data.
-- 5): Making the Prediction with the Model
-- 6): Model Evaluation
-	- Calculation confusion matrix.
-	- Calculating various performance metrics.
-- 7): Plotting the ROC Curve
-- 8): Finding the optimal probability cut-offs
-- 9): Making Predictions on the Test Set
-- 10): Calculating lead scores for the entire dataset
-- 11): Choosing the Best Features that impacts our predictions
 
 
+## Data Instruction
+- **Dataset**: Historical data with ~9,000 rows and 37 columns.
+- **Target Variable**: `Converted` (1 for converted leads, 0 for non-converted).
+- **Features**: Includes variables like Lead Source, Total Time Spent on Website, Last Activity, etc. Some features required cleaning, binning, and transformation (e.g., creating dummy variables for categorical data).
 
------------------------------------------------------------------------------
+## Process in Brief
+### Data Analysis
+1. **Data Cleaning**:
+   - Removed unnecessary columns and rows with excessive null values.
+   - Addressed outliers by binning certain columns.
+   - Reduced levels in categorical variables and merged repeated levels.
+2. **Exploratory Data Analysis**:
+   - Visualized lead origins, sources, and activities.
+   - Identified key patterns such as most leads originating from Google or Landing Page Submissions.
 
-## Observations and Inferences from the Data Plotting and Visualization:
-------------------------------------------------------------------------------
+### ML Modeling
+1. **Data Preparation**:
+   - Converted binary categorical variables (Yes/No) into integers (1/0).
+   - Created dummy variables for non-binary categorical features.
+   - Split data into training (70%) and testing (30%) sets.
+   - Standard-scaled continuous variables.
+2. **Feature Selection**:
+   - Used Recursive Feature Elimination (RFE) to select the top 15 features.
+3. **Model Building**:
+   - Developed a Logistic Regression model iteratively by removing features with high Variance Inflation Factor (VIF > 5) or insignificant p-values (> 0.05).
+4. **Evaluation**:
+   - Evaluated the model using metrics like accuracy, sensitivity/recall, specificity, precision, and Area Under the Curve (AUC).
+   - Optimized the probability cutoff based on accuracy-sensitivity-specificity trade-offs.
 
-- We observe that there most if origin of the leads are from 'Landing Page Submission', while the least is from 'Lead Import'.
-- We also observe that most of the lead sources are from 'Google' followed by 'Direct Traffic', whereas 'Referral Sites' have the least.
-- We also see that people who opened their email are highly seen by the company as a possible lead.
-<br><br>
-- We observe that the average number of total visits by a customer on the website is on the lower end.
-- We also observe that average total time spent on the website by customes is also less.
-- We also observe that the average number of page view for the website on one visit is very less.
-<br><br>
+### Results
+- **Training Set Performance** (cutoff = 0.35):
+  - Accuracy: 78%
+  - Sensitivity/Recall: 80%
+  - Specificity: 77%
+  - Precision: 68%
+  - AUC: 86%
+- **Test Set Performance**:
+  - Accuracy: 78%
+  - Sensitivity/Recall: 77%
+  - Specificity: 78%
+  - Precision: 67%
+- Lead scores were calculated as $$ \text{Conversion Probability} \times 100 $$.
 
-----------------------------------------------------------------------------
+## Results
+The Logistic Regression model successfully achieved a lead conversion rate close to the target of 80%. The model's performance metrics indicate it is robust and meets business requirements. Key insights include:
+- Positive impact of features like Lead Source (e.g., Welingak Website) and Last Activity (e.g., SMS Sent).
+- Negative impact of features like "Do Not Email" and "Olark Chat Conversion."
 
-## Top Features impacting the Lead conversion:
-------------------------------------------------------
-The conversion probability of a lead increases with increase in values of the following features in descending order:
-> - Lead Source_Welingak Website
-> - Lead Source_Reference
-> - Last Activity_SMS Sent
-> - Last Activity_Other Activities
-> - Lead Origin_Lead Import
-> - Lead Source_Olark Chat
-> - Total Time Spent on Website
-> - Last Activity_Email Opened
-<br><br>
-
-The conversion probability of a lead increases with decrease in values of the following features in descending order:
-> - Do Not Email
-> - Last Activity_Olark Chat Conversion
-
---------------------------------------------------------------------------------
-
-## Conclusion:
------------------------------------------------------------------------------------
-The model we made using the logistic regression can be considered a good model. It has the following characteristics -
-
-- `All the features/variables have a P-value of less than 0.05.`
-
-- `The VIF scores for all the variables are very low and are less than 5, thus there is hardly any multi-collinearity between the variables.`
-
-- `The overall accuracy of the model is around 78%, with a threshold probaility of 0.5.`
-
-- `Thus the accuracy is very acceptable.`
-
-- `Also the specificity of the model is around 78.5% which is also acceptable.`
-
-- `The sensitivity/recall of the model is around 76% which is also acceptable.`
-
-- `The precision of the model is about 68% which could be considered decent.`
-
-- `Also, when we plotted the ROC curve, the area under the curve we got was aroung 86%, which could be considered good.`
-
-<br><br>
-**Overall this model meets our business requirement, where we can say we got a lead conversion rate of nearly 80%.**
-<br><br>
-Apart from the model there were some variable which greatly influenced our model.
-The top 3 variables which influenced our model in a positive way are -
-- 1 - Lead Source - Welingak Website
-- 2 - Lead Source - Reference
-- 3 - Last Activity - SMS Sent
-<br><br>
-The top 2 variables which influenced our model in a negative way are -
-1 - Do Not Email
-2 - Last Activity - Olark Chat Conversion
-
-
---------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------
-
-
+This solution enables X Education's sales team to focus on high-priority leads, improving efficiency and potentially increasing revenue.
